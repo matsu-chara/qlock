@@ -99,6 +99,13 @@ qlock.MaskView = function($window, $container, model) {
       $maskB = $("#js-mask-clock-invert"),
       count = 0;
 
+  var MASK_STATE = {
+    NONE: 0,
+    VERTICAL_BAR: 1,
+    HOLIZONTAL_BAR: 2,
+    FULL: 3
+  };
+
   function construct() {
     $(model).on("update", function(e, sec) {
       changeView();
@@ -106,69 +113,51 @@ qlock.MaskView = function($window, $container, model) {
   }
 
   function changeView() {
-    var top = 10,
-        bottom = 5;
-
     switch(++count) {
       case 1:
-        changeZ($maskA, bottom);
-        changeZ($maskB, top);
-        reset($maskA, {"width":  "100%"});
-        reset($maskA, {"height": "100%"});
-        reset($maskB, {"width":  "100%"});
-        reset($maskB, {"height": "100%"});
-        anim($maskB, {"width": "0%"});
+        setZindex($maskB, $maskA);
+        resetState($maskA, MASK_STATE.FULL);
+        swipeRight($maskB);
         break;
       case 2:
-        changeZ($maskA, top);
-        changeZ($maskB,  bottom);
-        reset($maskB, {"width":  "100%"});
-        reset($maskB, {"height": "100%"});
-        anim($maskA, {"height": "0%"});
+        setZindex($maskA, $maskB);
+        resetState($maskB, MASK_STATE.FULL);
+        swipeDown($maskA);
        break;
       case 3:
-        changeZ($maskA, top);
-        reset($maskA, {"width":  "0%"});
-        reset($maskA, {"height": "100%"});
-        anim($maskA, {"width": "100%"});
+        setZindex($maskA, $maskB);
+        resetState($maskB, MASK_STATE.FULL);
+        swipeLeft($maskA);
         break;
       case 4:
-        changeZ($maskB, top);
-        changeZ($maskA, bottom);
-        reset($maskB, {"width":  "100%"});
-        reset($maskB, {"height": "0%"});
-        anim($maskB, {"height": "100%"});
-        break;
-      case 5:
-        reset($maskA, {"width":  "100%"});
-        reset($maskA, {"height": "100%"});
-        anim($maskB, {"width": "0%"});
-        break;
-      case 6:
-        changeZ($maskA, top);
-        changeZ($maskB, bottom);
-        reset($maskB, {"width":  "100%"});
-        reset($maskB, {"height": "100%"});
-        anim($maskA, {"height": "0%"});
-        break;
-      case 7:
-        changeZ($maskA, top);
-        changeZ($maskB, bottom);
-        reset($maskA, {"width":  "0%"});
-        reset($maskA, {"height": "100%"});
-        anim($maskA, {"width": "100%"});
-        break;
-      case 8:
-        changeZ($maskB, top);
-        changeZ($maskA, bottom);
-        reset($maskB, {"width":  "100%"});
-        reset($maskB, {"height": "0%"});
-        anim($maskB, {"height": "100%"});
+        setZindex($maskB, $maskA);
+        resetState($maskA, MASK_STATE.FULL);
+        swipeUp($maskB);
         count = 0;
         break;
       default:
         break;
     }
+  }
+
+  function swipeRight($mask) {
+    resetState($mask, MASK_STATE.FULL);
+    anim($mask, {"width": "0%"});
+  }
+
+  function swipeDown($mask) {
+    resetState($mask, MASK_STATE.FULL);
+    anim($mask, {"height": "0%"});
+  }
+
+  function swipeLeft($mask) {
+    resetState($mask, MASK_STATE.VERTICAL_BAR);
+    anim($mask, {"width": "100%"});
+  }
+
+  function swipeUp($mask) {
+    resetState($mask, MASK_STATE.HOLIZONTAL_BAR);
+    anim($mask, {"height": "100%"});
   }
 
   function anim($mask, css) {
@@ -182,9 +171,41 @@ qlock.MaskView = function($window, $container, model) {
          .animate(css, time, "easeOutExpo");
   }
 
+  function setZindex($topMask, $bottomMask) {
+    var top = 10,
+        bottom = 5;
+        changeZ($topMask,    top);
+        changeZ($bottomMask, bottom);
+  }
+
   function changeZ($current, index) {
     $(".z" + index).removeClass("z" + index);
     $current.addClass("z" + index);
+  }
+
+  function resetState($mask, state) {
+    var width, height;
+
+    switch(state) {
+      case MASK_STATE.NONE:
+        width = "0%";
+        height = "0%";
+        break;
+      case MASK_STATE.VERTICAL_BAR:
+        width = "0%";
+        height = "100%";
+        break;
+      case MASK_STATE.HOLIZONTAL_BAR:
+        width = "100%";
+        height = "0%";
+        break;
+      case MASK_STATE.FULL:
+        width = "100%";
+        height = "100%";
+        break;
+    }
+    reset($mask, {"width":  width});
+    reset($mask, {"height": height});
   }
 
   function reset($mask, css) {
