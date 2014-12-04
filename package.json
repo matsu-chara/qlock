@@ -1,0 +1,33 @@
+{
+  "name": "qlock",
+  "version": "1.0.0",
+  "description": "QLOCK",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/matsu-chara/qlock.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/matsu-chara/qlock/issues"
+  },
+  "homepage": "https://github.com/matsu-chara/qlock",
+  "browserify": {
+    "transform": [
+      "debowerify"
+    ]
+  },
+  "devDependencies": {
+    "coffee-script": "*",
+    "vinyl-source-stream": "*",
+    "gulp": "*",
+    "bower": "*",
+    "browserify": "*",
+    "debowerify": "*",
+    "browsernizr": "*"
+  }
+}
