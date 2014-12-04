@@ -1,4 +1,4 @@
-//QLOCK-写経 2014/12/02
+// QLOCK-写経 2014/12/02
 
 /*global $, _ */
 
@@ -49,6 +49,50 @@ qlock.TimerModel = function() {
   return that;
 };
 
+qlock.ClockView = function($clock, model) {
+  "use strict";
+  var that = {},
+      $hh = $clock.find("#js-hh"),
+      $mm = $clock.find("#js-mm"),
+      $ss = $clock.find("#js-ss"),
+      $hhInvert = $clock.find("#js-hh-invert"),
+      $mmInvert = $clock.find("#js-mm-invert"),
+      $ssInvert = $clock.find("#js-ss-invert");
+
+  function construct() {
+    $(model).on("update", render);
+  }
+
+  function render(e, data) {
+    var c = data.current,
+        p = data.past;
+
+    renderText($hh, c.hh, p.hh);
+    renderText($mm, c.mm, p.mm);
+    renderText($ss, c.ss, p.ss);
+    renderText($hhInvert, c.hh, p.hh);
+    renderText($mmInvert, c.mm, p.mm);
+    renderText($ssInvert, c.ss, p.ss);
+  }
+
+  function renderText($dom, current, past) {
+    if(current !== past) {
+      $dom.text(zeroFormat(current, 2));
+    }
+  }
+
+  function zeroFormat(num, n) {
+    var ret = "" + num;
+    while(ret.length < n) {
+      ret = "0" + ret;
+    }
+    return ret;
+  }
+
+  construct();
+  return that;
+};
+
 qlock.ContainerView = function($window, $container) {
   "use strict";
   var $resizeContainer;
@@ -72,13 +116,18 @@ qlock.ContainerView = function($window, $container) {
   }
 
   $(construct);
-}
+};
 
 (function() {
   "use strict";
   var $window = $(window),
-      $container = $(".container");
-      timerModel = qlock.Timermodel();
+      $container = $(".container"),
+      $clock = $(".clock"),
+      timerModel = qlock.TimerModel();
 
+      console.log(qlock);
   qlock.ContainerView($window, $container);
+  // qlock.MaskView($window, $container, timerModel);
+  qlock.ClockView($clock, timerModel);
+  timerModel.start();
 } ());
