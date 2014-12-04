@@ -1,0 +1,25 @@
+{
+  "name": "qlock",
+  "version": "0.0.0",
+  "homepage": "https://github.com/matsu-chara/qlock",
+  "authors": [
+    "matsu-chara <matsuy00@gmail.com>"
+  ],
+  "description": "QLOCK",
+  "main": "index.html",
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~1.10.2",
+    "lodash": "~2.4.1",
+    "jquery-easing": "*",
+    "underscore.string": "~2.4.0"
+  }
+}
